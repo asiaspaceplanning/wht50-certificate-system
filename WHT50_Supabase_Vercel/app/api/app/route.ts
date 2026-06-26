@@ -61,6 +61,16 @@ async function recordLog(action: string, targetType: string, targetId: string, d
   });
 }
 
+
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    message: 'ช่องทางเชื่อมต่อข้อมูลพร้อมใช้งาน',
+    service: 'wht50-api',
+    checkedAt: new Date().toISOString()
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));

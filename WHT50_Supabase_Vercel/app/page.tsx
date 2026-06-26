@@ -82,15 +82,23 @@ export default function HomePage() {
   async function api(action: string, payload: Row = {}, code = accessCode) {
     const res = await fetch('/api/app', {
       method: 'POST',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'x-app-access-code': code
       },
       body: JSON.stringify({ action, payload })
     });
 
+    const contentType = res.headers.get('content-type') || '';
+
+    if (!contentType.includes('application/json')) {
+      throw new Error('ไม่พบช่องทางเชื่อมต่อข้อมูลของระบบ กรุณาตรวจสอบการ Deploy และเส้นทาง /api/app');
+    }
+
     const json = await res.json();
-    if (!json.ok) throw new Error(json.message || 'ไม่สามารถดำเนินการได้');
+    if (!res.ok || !json.ok) throw new Error(json.message || 'ไม่สามารถดำเนินการได้');
     return json.data;
   }
 
